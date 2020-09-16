@@ -6,7 +6,7 @@
 
 > 每篇想法最前面都应该是 **Reference** (参考)
 
-> 每篇想法涉及代码都应新建相关空白分支，并有简单的运行说明文档
+> 简短的示例不做新的仓库也不做分支，涉及项目部分则应该新建仓库并指向特定提交
 
 ---
 
@@ -29,6 +29,11 @@
 - [CURL 库示例：php-curl-class](posts/try-library-of-php-curl-class.md)
 - [PHPUnit 测试库示例](posts/try-phpunit-test-framework.md)
 - [Markdown 解析库示例：Parsedown](posts/try-markdown-parse-library-parsedown.md)
+
+
+**尝试**
+
+- [记一次 Excel 的使用经历](posts/a-excel-experience.md)
 
 ---
 
