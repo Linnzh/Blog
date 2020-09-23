@@ -5,6 +5,7 @@
 - [Databases and the Doctrine ORM](https://symfony.com/doc/current/doctrine.html)
 - [Testing](https://symfony.com/doc/current/testing.html)
 - [How to Test Code that Interacts with the Database](https://symfony.com/doc/current/testing/database.html)
+- [Working with Associations](https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/working-with-associations.html)
 
 -------------------------------
 
@@ -290,3 +291,81 @@ services:
             $targetDirectory: '%env(resolve:UPLOAD_DIR)%'
             $targetHost: '%env(resolve:UPLOAD_HOST)%'
 ```
+
+
+##  Doctrine ORM 疑惑 - 1
+
+今天遇到一个问题。
+
+```php
+$project = $projectRepository->find($id);
+
+if (!$project) {
+    throw new Exception('该项目不存在！ID: ' . $id);
+}
+
+$data = json_decode($request->getContent(), true);
+
+$entityManager = $this->getDoctrine()->getManager();
+
+foreach ($project->getSettlements() as $settlement) {
+    $project->removeSettlement($settlement);
+}
+
+foreach ($data as $settlement) {
+    $projectSettlement = new ProjectSettlement();
+    $projectSettlement->setDelimit($settlement['delimit']);
+    $projectSettlement->setDate(strtotime($settlement['date']));
+    $projectSettlement->setPercent($settlement['percent']);
+    $projectSettlement->setAmount($settlement['amount']);
+    // $projectSettlement->setProject($project);
+
+    $project->addSettlement($projectSettlement);
+    $entityManager->persist($projectSettlement);
+}
+
+$entityManager->flush();
+
+$result = $project->jsonSerialize();
+$result['settlements'] = $project->getSettlements()->toArray();
+return new JsonResponse($result['settlements']);
+```
+
+预计是返回一个数组，但返回了一个对象：
+
+```json
+{
+    "2": {
+        "id": 117,
+        "date": "2020-10-10 10:10:10",
+        "delimit": "",
+        "percent": "23.8",
+        "amount": "3444.23",
+        "create_at": "2020-09-23 09:35:16"
+    },
+    "3": {
+        "id": 118,
+        "date": "",
+        "delimit": "结算条件：当金额达到百分之三十时结算",
+        "percent": "23.8",
+        "amount": "3444.23",
+        "create_at": "2020-09-23 09:35:16"
+    }
+}
+```
+
+数据库是正确的，但是返回的形式完全错了。
+后查找原因可能是 Doctrine 懒加载的原因，在最后获取 settlement 时，采用循环而不是`toArray()`方法，即可获取预期结果：
+
+```php
+$result = $project->jsonSerialize();
+foreach ($project->getSettlements() as $settlement) {
+    $result['settlements'][] = $settlement->jsonSerialize();
+}
+```
+
+## Doctrine ORM 疑惑 - 2
+
+还是[上一个问题](#Doctrine ORM 疑惑 - 1)，因为设置了主表 project 与子表 project_settlement 的一对多关联，在给添加 project 添加 settlement 时，前面使用的是`$project->addSettlement($projectSettlement);`方法，后来想想`ProjectSettlement`模型中有`setProject()`方法，便尝试使用`$projectSettlement->setProject($project);`形式，结果在输出时`settlements`返回空，但数据库是正常添加的。
+
+
