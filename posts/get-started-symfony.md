@@ -368,4 +368,10 @@ foreach ($project->getSettlements() as $settlement) {
 
 还是[上一个问题](#Doctrine ORM 疑惑 - 1)，因为设置了主表 project 与子表 project_settlement 的一对多关联，在给添加 project 添加 settlement 时，前面使用的是`$project->addSettlement($projectSettlement);`方法，后来想想`ProjectSettlement`模型中有`setProject()`方法，便尝试使用`$projectSettlement->setProject($project);`形式，结果在输出时`settlements`返回空，但数据库是正常添加的。
 
+参考：[Batch Processing](https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/batch-processing.html)
+
+
+## Doctrine ORM 疑惑 - 3
+
+什么时候需要用到`$entityManager->persist()`方法？
 
