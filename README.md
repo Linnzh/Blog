@@ -34,6 +34,7 @@
 **尝试**
 
 - [记一次 Excel 的使用经历](posts/a-excel-experience.md)
+- [使用 PHP 与 JavaScript 上传文件](posts/upload-files-use-php-and-js.md)
 
 **开始**
 
