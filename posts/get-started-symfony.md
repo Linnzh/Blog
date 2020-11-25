@@ -35,8 +35,8 @@ composer create-project symfony/skeleton my_project_name
 
 ```bash
 
-composer require symfony/orm-pack
-composer require --dev symfony/maker-bundle
+composer require symfony/orm-pack nelmio/cors-bundle guzzlehttp/guzzle symfony/http-client
+composer require --dev symfony/maker-bundle phpunit/phpunit
 
 ```
 
@@ -46,9 +46,6 @@ composer require --dev symfony/maker-bundle
 # .env
 
 APP_ENV=dev
-
-# secret 可通过命令 php bin/console secrets:generate-keys 生成
-APP_SECRET=
 
 DATABASE_URL=mysql://root:password@127.0.0.1:3306/project_manage?serverVersion=8.0&charset=utf8mb4&collate=utf8mb4_unicode_ci
 ```
