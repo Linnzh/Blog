@@ -1,6 +1,6 @@
 ---
 name: Docs
-about: 文档
+about: 普通文档
 title: "[Docs]"
 labels: docs
 assignees: ''
